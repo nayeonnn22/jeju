@@ -125,4 +125,27 @@ def plot_actual_vs_pred(results, y_test_exp, models_to_plot):
     plt.tight_layout()
     plt.show()
 
+
 plot_actual_vs_pred(results, np.expm1(y_test), ["Ridge", "LinearRegression"])
+
+# ==============================
+# 10. 회귀 계수 시각화 (선형 모델)
+# ==============================
+def plot_linear_coefficients(model, feature_names, title="회귀 계수"):
+    coefs = pd.Series(model.coef_, index=feature_names)
+    coefs = coefs.sort_values()
+    plt.figure(figsize=(10,6))
+    sns.barplot(x=coefs.values, y=coefs.index)
+    plt.title(title)
+    plt.xlabel("계수 값")
+    plt.ylabel("특징")
+    plt.show()
+    print(coefs)
+
+# LinearRegression, Ridge 계수 확인
+for name in ["LinearRegression", "Ridge"]:
+    model = models[name]
+    scale_flag = True  # 스케일링 했던 모델들
+    X_train_scaled, X_test_scaled = scale_features(X_train, X_test)
+    model.fit(X_train_scaled, y_train)
+    plot_linear_coefficients(model, X.columns, title=f"{name} 회귀 계수")
